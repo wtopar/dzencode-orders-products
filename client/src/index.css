@@ -144,6 +144,21 @@ body {
 .chart-box { background: var(--card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 18px 20px; }
 .chart-box h3 { font-size: 15px; margin: 0 0 12px; color: #3f4650; }
 
+/* ---- Auth ---- */
+.topmenu__login, .topmenu__logout {
+  border: 1px solid var(--green); background: #fff; color: var(--green-dark);
+  border-radius: 6px; padding: 6px 14px; font-weight: 600; cursor: pointer; font-size: 13px;
+}
+.topmenu__login:hover, .topmenu__logout:hover { background: var(--green); color: #fff; }
+.topmenu__user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.topmenu__logout { padding: 4px 10px; }
+.login-modal { min-width: 340px; display: flex; flex-direction: column; gap: 12px; }
+.login-modal__title { margin: 0; font-size: 20px; }
+.login-modal__input { height: 42px; border: 1px solid var(--line); border-radius: 6px; padding: 0 14px; font-size: 14px; }
+.login-modal__input:focus { outline: none; border-color: var(--green); }
+.login-modal__error { color: #e53935; font-size: 13px; }
+.login-modal__hint { color: var(--muted); font-size: 12px; }
+
 /* ---- Animations ---- */
 .route-fade { animation: fadeIn .35s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

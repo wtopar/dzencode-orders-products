@@ -92,7 +92,16 @@ export default function OrdersPage() {
       <DeleteModal
         order={toDelete}
         onCancel={() => setToDelete(null)}
-        onConfirm={() => { if (toDelete) dispatch(removeOrder(toDelete.id)); setToDelete(null); }}
+        onConfirm={async () => {
+          if (toDelete) {
+            try {
+              await dispatch(removeOrder(toDelete.id)).unwrap();
+            } catch {
+              alert('Для удаления нужно войти. Демо-доступ: admin / admin.');
+            }
+          }
+          setToDelete(null);
+        }}
       />
     </div>
   );

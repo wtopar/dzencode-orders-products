@@ -3,9 +3,10 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import orders from './ordersSlice';
 import products from './productsSlice';
 import sessions from './sessionsSlice';
+import auth from './authSlice';
 
 export const store = configureStore({
-  reducer: { orders, products, sessions },
+  reducer: { orders, products, sessions, auth },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
