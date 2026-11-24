@@ -4,8 +4,8 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { logout } from '../store/authSlice';
 import { setSearch } from '../store/uiSlice';
 
-const WEEKDAYS_RU = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const WEEKDAYS_SHORT_RU = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+const WEEKDAYS_SHORT_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTHS_RU = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -40,7 +40,7 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
   const dispatch = useAppDispatch();
 
   const en = (i18n.language || 'ru').startsWith('en');
-  const weekdays = en ? WEEKDAYS_EN : WEEKDAYS_RU;
+  const weekdaysShort = en ? WEEKDAYS_SHORT_EN : WEEKDAYS_SHORT_RU;
   const months = en ? MONTHS_EN : MONTHS_RU;
 
   useEffect(() => {
@@ -69,9 +69,9 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
           <div className="cal" aria-hidden="true">
             <div className="cal__m">{months[now.getMonth()]}</div>
             <div className="cal__d">{pad(now.getDate())}</div>
+            <div className="cal__w">{weekdaysShort[now.getDay()]}</div>
           </div>
           <div className="topmenu__dt-text">
-            <div className="topmenu__weekday">{weekdays[now.getDay()]}</div>
             <div className="topmenu__time">
               <ClockIcon />
               <span>{pad(now.getHours())}:{pad(now.getMinutes())}<span className="topmenu__secs">:{pad(now.getSeconds())}</span></span>

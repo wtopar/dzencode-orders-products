@@ -31,5 +31,9 @@ export const updateProduct = (id: number, data: ProductInput) =>
 export const deleteProduct = (id: number) =>
   api.delete(`/products/${id}`).then((r) => r.data);
 export const getUsers = () => api.get<User[]>('/users').then((r) => r.data);
+export const getSettings = () =>
+  api.get<{ uahRate: number }>('/settings').then((r) => r.data);
+export const updateSettings = (uahRate: number) =>
+  api.put<{ uahRate: number }>('/settings', { uahRate }).then((r) => r.data);
 
 export default api;

@@ -82,6 +82,12 @@ async function createSchema() {
     status ENUM('active','blocked') NOT NULL DEFAULT 'active',
     created DATETIME NOT NULL
   ) ENGINE=InnoDB`);
+  await p.query(`CREATE TABLE IF NOT EXISTS settings (
+    k VARCHAR(64) PRIMARY KEY,
+    v VARCHAR(255) NOT NULL
+  ) ENGINE=InnoDB`);
+  // Default site settings (USD -> UAH exchange rate, editable in the UI)
+  await p.query("INSERT IGNORE INTO settings (k, v) VALUES ('uah_rate', '41')");
 }
 
 async function seedIfEmpty() {

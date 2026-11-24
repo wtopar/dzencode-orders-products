@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import { useAppDispatch, useAppSelector } from '../store';
 import { logout } from '../store/authSlice';
+import { getSettings, updateSettings } from '../api';
 
 function useStoredToggle(key: string, def: boolean): [boolean, () => void] {
   const [on, setOn] = useState<boolean>(() => {
@@ -30,6 +32,29 @@ export default function SettingsPage() {
   const [compact, toggleCompact] = useStoredToggle('pref.compact', false);
   const [hints, toggleHints] = useStoredToggle('pref.hints', true);
   const [saved, setSaved] = useState('');
+
+  const [rate, setRate] = useState('');
+  const [rateSaving, setRateSaving] = useState(false);
+  const [rateMsg, setRateMsg] = useState('');
+
+  useEffect(() => { getSettings().then((s) => setRate(String(s.uahRate))).catch(() => {}); }, []);
+
+  const saveRate = async () => {
+    const v = Number(rate);
+    if (!(v > 0)) { setRateMsg(t('settings.fxError')); setTimeout(() => setRateMsg(''), 2500); return; }
+    setRateSaving(true);
+    try {
+      const res = await updateSettings(v);
+      setRate(String(res.uahRate));
+      setRateMsg(t('settings.fxSaved'));
+    } catch (e) {
+      const status = axios.isAxiosError(e) ? e.response?.status : undefined;
+      setRateMsg(status === 401 ? t('orders.needLogin') : t('form.saveError'));
+    } finally {
+      setRateSaving(false);
+      setTimeout(() => setRateMsg(''), 3000);
+    }
+  };
 
   const changeLang = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -65,6 +90,24 @@ export default function SettingsPage() {
           <button className={'segmented__btn' + (lang.startsWith('ru') ? ' is-active' : '')} onClick={() => changeLang('ru')}>Русский</button>
           <button className={'segmented__btn' + (lang.startsWith('en') ? ' is-active' : '')} onClick={() => changeLang('en')}>English</button>
         </div>
+      </section>
+
+      <section className="scard">
+        <h3 className="scard__title">{t('settings.fx')}</h3>
+        <div className="scard__row">
+          <span>{t('settings.fxLabel')}</span>
+          <div className="scard__fx">
+            <input
+              className="scard__fx-input" type="number" min="0" step="0.01"
+              value={rate} onChange={(e) => setRate(e.target.value)}
+            />
+            <button className="btn-outline" onClick={saveRate} disabled={rateSaving}>
+              {rateSaving ? t('form.saving') : t('settings.save')}
+            </button>
+          </div>
+        </div>
+        <div className="scard__hint">{t('settings.fxHint')}</div>
+        {rateMsg && <div className="scard__saved">{rateMsg}</div>}
       </section>
 
       <section className="scard">

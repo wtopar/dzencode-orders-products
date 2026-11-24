@@ -83,10 +83,21 @@ function nowDateTime() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
 
-const UAH_RATE = 41; // demo FX rate (USD -> UAH)
+const DEFAULT_UAH_RATE = 41; // fallback FX rate (USD -> UAH) if settings missing
+
+// Read the current USD->UAH rate from the settings table (editable in the UI).
+async function getUahRate() {
+  try {
+    const [rows] = await getPool().query("SELECT v FROM settings WHERE k = 'uah_rate'");
+    const r = Number(rows[0]?.v);
+    return r > 0 ? r : DEFAULT_UAH_RATE;
+  } catch {
+    return DEFAULT_UAH_RATE;
+  }
+}
 
 // Build the two price rows (USD + default UAH) from the form payload.
-function normalizePrices(body) {
+function normalizePrices(body, rate) {
   if (Array.isArray(body.price) && body.price.length) {
     return body.price.map((p) => ({
       value: Number(p.value) || 0,
@@ -97,7 +108,7 @@ function normalizePrices(body) {
   const usd = Math.max(0, Number(body.priceUsd) || 0);
   return [
     { value: usd, symbol: 'USD', isDefault: 0 },
-    { value: Math.round(usd * UAH_RATE * 100) / 100, symbol: 'UAH', isDefault: 1 },
+    { value: Math.round(usd * rate * 100) / 100, symbol: 'UAH', isDefault: 1 },
   ];
 }
 
@@ -268,7 +279,7 @@ app.post('/api/products', requireAuth, async (req, res, next) => {
       [Number(b.serialNumber), b.isNew ? 1 : 0, photo, String(b.title).trim(), String(b.type).trim(),
         b.specification || '', gStart, gEnd, Number(b.order), date],
     );
-    for (const pr of normalizePrices(b)) {
+    for (const pr of normalizePrices(b, await getUahRate())) {
       await conn.query('INSERT INTO prices (product_id, value, symbol, is_default) VALUES (?,?,?,?)',
         [r.insertId, pr.value, pr.symbol, pr.isDefault]);
     }
@@ -306,7 +317,7 @@ app.put('/api/products/:id', requireAuth, async (req, res, next) => {
         b.specification || '', gStart, gEnd, Number(b.order), req.params.id],
     );
     await conn.query('DELETE FROM prices WHERE product_id = ?', [req.params.id]);
-    for (const pr of normalizePrices(b)) {
+    for (const pr of normalizePrices(b, await getUahRate())) {
       await conn.query('INSERT INTO prices (product_id, value, symbol, is_default) VALUES (?,?,?,?)',
         [req.params.id, pr.value, pr.symbol, pr.isDefault]);
     }
@@ -328,6 +339,39 @@ app.delete('/api/products/:id', requireAuth, async (req, res, next) => {
     io.emit('orders:changed');
     io.emit('products:changed');
     res.json({ ok: true, id: Number(req.params.id) });
+  } catch (e) { next(e); }
+});
+
+// GET /api/settings — site settings (currently the USD->UAH exchange rate).
+app.get('/api/settings', async (_req, res, next) => {
+  try {
+    res.json({ uahRate: await getUahRate() });
+  } catch (e) { next(e); }
+});
+
+// PUT /api/settings — update the USD->UAH rate; recompute every UAH price. Requires JWT.
+app.put('/api/settings', requireAuth, async (req, res, next) => {
+  try {
+    const rate = Number(req.body?.uahRate);
+    if (!(rate > 0)) {
+      return res.status(400).json({ error: 'uahRate must be a positive number', fields: ['uahRate'] });
+    }
+    const p = getPool();
+    await p.query(
+      "INSERT INTO settings (k, v) VALUES ('uah_rate', ?) ON DUPLICATE KEY UPDATE v = VALUES(v)",
+      [String(rate)],
+    );
+    // Recompute every UAH price from its product's USD price at the new rate.
+    await p.query(
+      `UPDATE prices uah
+       JOIN prices usd ON usd.product_id = uah.product_id AND usd.symbol = 'USD'
+       SET uah.value = ROUND(usd.value * ?, 2)
+       WHERE uah.symbol = 'UAH'`,
+      [rate],
+    );
+    io.emit('orders:changed');
+    io.emit('products:changed');
+    res.json({ uahRate: rate });
   } catch (e) { next(e); }
 });
 
