@@ -149,12 +149,27 @@ body {
 .products__head { display: flex; align-items: center; gap: 30px; margin-bottom: 20px; }
 .products__filter { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 10px; }
 .products__filter select { min-width: 220px; height: 40px; border: 1px solid var(--line); border-radius: 4px; padding: 0 12px; background: #fff; color: var(--text); }
-.product-row { border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.06); border-bottom: none; margin-bottom: 10px; }
-.product-row__guarantee { font-size: 13px; min-width: 120px; }
-.product-row__cond { min-width: 60px; font-size: 13px; }
-.product-row__price { min-width: 120px; text-align: right; }
-.product-row__order { min-width: 150px; color: var(--green-dark); font-size: 13px; }
-.product-row__date { min-width: 90px; }
+/* Products — modern cards */
+.products__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+.pcard { position: relative; background: var(--card); border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 16px 18px; transition: box-shadow .15s, transform .15s; }
+.pcard:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1); transform: translateY(-2px); }
+.pcard__head { display: flex; align-items: center; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.pcard__thumb { width: 48px; height: 48px; border-radius: 10px; overflow: hidden; flex: none; }
+.pcard__thumb img { width: 100%; height: 100%; display: block; }
+.pcard__titlewrap { flex: 1; min-width: 0; }
+.pcard__title { font-weight: 600; font-size: 14px; color: #3f4650; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.pcard__sn { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.pill { font-size: 10.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; flex: none; text-transform: uppercase; letter-spacing: .3px; }
+.pill--ok { background: #e7f3d8; color: #5f8a16; }
+.pill--warn { background: #fdeede; color: #c67d28; }
+.pcard__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+.field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.field__label { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+.field__val { font-size: 13px; color: #3f4650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.field__val--accent { color: var(--green-dark); }
+.field__val b { font-size: 14px; }
+.pcard__del { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; border: none; background: #f3f5f7; border-radius: 8px; color: #8d99a6; cursor: pointer; flex: none; transition: background .15s, color .15s; }
+.pcard__del:hover { background: #fde7e7; color: #e53935; }
 
 /* ---- Delete modal ---- */
 .modal-backdrop-custom {

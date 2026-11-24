@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchProducts, fetchTypes, setFilter } from '../store/productsSlice';
-import { dateNumeric, dateNamed, defaultPrice, otherPrice, money } from '../utils/format';
-import { TrashIcon, MonitorIcon } from '../components/Icons';
+import { dateNumeric, dateNamed, money } from '../utils/format';
+import { TrashIcon } from '../components/Icons';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
@@ -19,41 +19,67 @@ export default function ProductsPage() {
         <h1 className="page-title">{t('products.title')} / {items.length}</h1>
         <label className="products__filter">
           {t('products.type')}:
-          <select
-            value={filterType}
-            onChange={(e) => dispatch(setFilter(e.target.value))}
-          >
+          <select value={filterType} onChange={(e) => dispatch(setFilter(e.target.value))}>
             <option value="">{t('products.all')}</option>
             {types.map((ty) => <option key={ty} value={ty}>{ty}</option>)}
           </select>
         </label>
       </div>
 
-      <div className="products__list">
-        {items.map((p) => (
-          <div key={p.id} className="product-row">
-            <span className="product-row__status" />
-            <span className="product-row__img"><MonitorIcon /></span>
-            <span className="product-row__title">
-              {p.title}<br /><small className="muted">SN-{p.serialNumber}</small>
-            </span>
-            <span className={'product-row__state ' + (p.isNew ? 'is-new' : 'is-used')}>
-              {p.isNew ? t('status.free') : t('status.repair')}
-            </span>
-            <span className="product-row__guarantee">
-              <div><small className="muted">с</small> {dateNumeric(p.guarantee.start)}</div>
-              <div><small className="muted">по</small> {dateNumeric(p.guarantee.end)}</div>
-            </span>
-            <span className="product-row__cond">{p.isNew ? t('status.new') : t('status.used')}</span>
-            <span className="product-row__price">
-              <div className="muted">{money(defaultPrice(p.price)?.symbol === 'USD' ? defaultPrice(p.price) : otherPrice(p.price))}</div>
-              <b>{money(defaultPrice(p.price)?.symbol === 'USD' ? otherPrice(p.price) : defaultPrice(p.price))}</b>
-            </span>
-            <span className="product-row__order">{p.orderTitle}</span>
-            <span className="product-row__date muted">{dateNamed(p.date)}</span>
-            <button className="product-row__del" aria-label="delete" title="Удалить"><TrashIcon /></button>
-          </div>
-        ))}
+      <div className="products__grid">
+        {items.map((p) => {
+          const usd = p.price.find((x) => x.symbol === 'USD');
+          const uah = p.price.find((x) => x.symbol === 'UAH');
+          return (
+            <article key={p.id} className="pcard">
+              <div className="pcard__head">
+                <span className="pcard__thumb">
+                  <img src={p.photo} alt={p.type}
+                    onError={(e) => { e.currentTarget.src = '/img/products/default.svg'; }} />
+                </span>
+                <div className="pcard__titlewrap">
+                  <div className="pcard__title">{p.title}</div>
+                  <div className="pcard__sn">SN-{p.serialNumber}</div>
+                </div>
+                <span className={'pill ' + (p.isNew ? 'pill--ok' : 'pill--warn')}>
+                  {p.isNew ? t('status.free') : t('status.repair')}
+                </span>
+                <button className="pcard__del" aria-label="delete" title="Удалить"><TrashIcon /></button>
+              </div>
+
+              <div className="pcard__grid">
+                <div className="field">
+                  <span className="field__label">{t('products.type')}</span>
+                  <span className="field__val">{p.type}</span>
+                </div>
+                <div className="field">
+                  <span className="field__label">Состояние</span>
+                  <span className="field__val">{p.isNew ? t('status.new') : t('status.used')}</span>
+                </div>
+                <div className="field">
+                  <span className="field__label">Гарантия</span>
+                  <span className="field__val">{dateNumeric(p.guarantee.start)} — {dateNumeric(p.guarantee.end)}</span>
+                </div>
+                <div className="field">
+                  <span className="field__label">Приход</span>
+                  <span className="field__val field__val--accent">{p.orderTitle}</span>
+                </div>
+                <div className="field">
+                  <span className="field__label">Цена</span>
+                  <span className="field__val">
+                    <span className="muted">{money(usd)}</span> <b>{money(uah)}</b>
+                  </span>
+                </div>
+                <div className="field">
+                  <span className="field__label">Добавлен</span>
+                  <span className="field__val">{dateNamed(p.date)}</span>
+                </div>
+              </div>
+
+              <button className="pcard__del" aria-label="delete" title="Удалить"><TrashIcon /></button>
+            </article>
+          );
+        })}
       </div>
     </div>
   );
