@@ -17,6 +17,16 @@ function LogoutIcon() {
   );
 }
 
+function ClockIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="9" />
+      <polyline points="12 7 12 12 15 14" />
+    </svg>
+  );
+}
+
 export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) {
   const [now, setNow] = useState(new Date());
   const sessions = useAppSelector((s) => s.sessions.count);
@@ -50,8 +60,8 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
           <div className="topmenu__dt-text">
             <div className="topmenu__weekday">{WEEKDAYS[now.getDay()]}</div>
             <div className="topmenu__time">
-              {pad(now.getHours())}:{pad(now.getMinutes())}
-              <span className="topmenu__secs">:{pad(now.getSeconds())}</span>
+              <ClockIcon />
+              <span>{pad(now.getHours())}:{pad(now.getMinutes())}<span className="topmenu__secs">:{pad(now.getSeconds())}</span></span>
             </div>
           </div>
         </div>

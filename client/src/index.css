@@ -76,7 +76,12 @@ body {
 .cal__d { background: #fff; color: #3f4650; font-size: 14px; font-weight: 700; padding: 2px 0; }
 .topmenu__dt-text { text-align: left; }
 .topmenu__weekday { font-weight: 700; font-size: 13px; color: #3f4650; }
-.topmenu__time { color: var(--green-dark); font-size: 12px; font-variant-numeric: tabular-nums; }
+.topmenu__time {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 3px; width: fit-content;
+  background: #eef4e4; color: var(--green-dark); border-radius: 7px; padding: 3px 8px;
+  font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+.topmenu__time svg { flex: none; opacity: .9; }
 
 /* user block (far right) */
 .topmenu__user { display: flex; align-items: center; gap: 8px; font-size: 13px; }
@@ -228,7 +233,7 @@ body {
   }
   .sidebar--open { transform: translateX(0); }
   .layout__overlay { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000; }
-  .topmenu { gap: 10px; padding: 0 14px; height: 60px; }
+  .topmenu { gap: 14px; padding: 0 16px; height: 62px; }
   .topmenu__search { display: none; }
   .topmenu__logo-text { display: none; }
   .topmenu__right { gap: 12px; }
@@ -258,9 +263,9 @@ body {
 }
 
 @media (max-width: 560px) {
-  .topmenu { padding: 0 10px; gap: 8px; }
-  .topmenu__right { gap: 10px; }
-  .topmenu__datetime { gap: 7px; }
+  .topmenu { padding: 0 14px; gap: 12px; }
+  .topmenu__right { gap: 12px; }
+  .topmenu__datetime { gap: 8px; }
   .topmenu__logo-text { display: none; }
   .topmenu__weekday { display: none; }
   .topmenu__secs { display: none; }
