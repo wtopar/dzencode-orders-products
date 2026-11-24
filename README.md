@@ -1,35 +1,128 @@
-# dZENcode Test Task — Orders & Products (SPA)
+# Orders & Products — SPA (dZENcode test task)
 
-Fullstack SPA: **React + Redux Toolkit + React Router** frontend, **Node/Express + Socket.io** backend, **MySQL** database, fully **Dockerized**.
+Fullstack single-page application: a small inventory of **Orders** and the **Products** inside them.
 
-> Test assignment for dZENcode. Spec and screens: `docs/task-spec/`.
+**Live demo:** http://13.51.72.52
+**Stack:** React 19 + TypeScript (Vite) · Redux Toolkit · React Router · Socket.io · Node.js/Express · MySQL 8 · Docker.
+
+![Orders](docs/task-spec/screens/screen_4.png)
+
+---
 
 ## Features
-- **Orders** page — list of orders; click an order to open its products panel beside the list; close button; per order: title, product count, creation date in two formats, total price summed across products in two currencies; delete button → confirmation popup.
-- **Products** page — all products with a filter by type (select); per product: title, type, guarantee dates in different formats, price in several currencies, order name.
-- **Top menu** — live clock (real-time) + **active-sessions counter via Socket.io** (number of open app tabs across browsers).
-- **Navigation menu** — routed links to Orders and Products, animated route transitions.
 
-## Stack
-| Layer | Tech |
+- **Orders** page — list of orders; click an order to open its products panel beside the list (closable). Each order shows: title, product count, creation date in **two formats**, total price summed across its products in **two currencies**, and a delete button that opens a **confirmation modal**.
+- **Products** page — all products with a **filter by type** (select). Each product shows: title, serial number, status, guarantee dates (two formats), price (two currencies), order name.
+- **Dashboard** — stat cards + **charts** (recharts): products by type, value by type. Aggregation runs in a **Web Worker** (off the main thread).
+- **Top bar** — live clock (updates every second) + **active-sessions counter via Socket.io** (how many app tabs are open across browsers, in real time).
+- **PWA** — installable, works offline (service worker + manifest).
+- **i18n** (ru/en), **lazy-loaded routes**, **Web Storage** (persisted filter), animated route transitions, responsive/mobile layout.
+
+## Tech & approaches
+
+| Area | Implementation |
 |---|---|
-| Frontend | React (Vite), Redux Toolkit, React Router, Axios, Socket.io-client, Bootstrap, BEM CSS, animations |
-| Backend | Node.js, Express, Socket.io, MySQL (mysql2) |
-| DB | MySQL 8 (schema in `db/schema.sql` + `db/schema.mwb` for MySQL Workbench) |
+| Global state | Redux Toolkit (slices + async thunks) |
+| Routing | React Router, route-level code splitting (lazy) |
+| Realtime | Socket.io (session counter, event-driven order refresh) |
+| HTTP | Axios (REST) |
+| Styling | Bootstrap + BEM, CSS animations, responsive breakpoints |
+| Backend | Node.js + Express, Socket.io |
+| Database | MySQL 8 (mysql2), normalized `orders → products → prices` |
+| PWA / perf | vite-plugin-pwa, Web Worker, lazy loading, memoization |
+| Tests | Vitest + React Testing Library |
 | Infra | Docker + docker-compose (client, server, db) |
 
-## Run (Docker)
+---
+
+## Run with Docker (recommended)
+
+Requires Docker + Docker Compose.
+
 ```bash
+git clone https://github.com/wtopar/dzencode-orders-products.git
+cd dzencode-orders-products
 docker compose up --build
 ```
-App: http://localhost:8080 · API: http://localhost:3000
 
-## Run (dev, without Docker)
+- App (client): **http://localhost**
+- API: proxied through the client's nginx at `/api`
+- MySQL: inside the `db` container (schema + seed data created automatically on first run)
+
+Stop: `docker compose down` (add `-v` to also drop the database volume).
+
+## Run in dev mode (without Docker)
+
+Requires Node.js 20+ and a local MySQL 8 (or `docker run` just the db).
+
 ```bash
-# backend
-cd server && npm install && npm run dev
-# frontend
-cd client && npm install && npm run dev
+# 1) backend
+cd server
+npm install
+# configure DB via env (defaults: localhost:3306 root/root inventory)
+npm run dev            # http://localhost:3000
+
+# 2) frontend (new terminal)
+cd client
+npm install
+npm run dev            # http://localhost:5173 (proxies /api and /socket.io to :3000)
 ```
 
-See `docs/PLAN.md` for the build plan and scope.
+### Backend environment variables
+
+| Var | Default | Description |
+|---|---|---|
+| `DB_HOST` | `localhost` | MySQL host |
+| `DB_PORT` | `3306` | MySQL port |
+| `DB_USER` | `root` | MySQL user |
+| `DB_PASSWORD` | `root` | MySQL password |
+| `DB_NAME` | `inventory` | Database name |
+| `PORT` | `3000` | API/WS port |
+
+## Tests
+
+```bash
+cd client
+npm test          # Vitest (unit + React Testing Library)
+```
+
+---
+
+## Database schema
+
+Normalized into three tables — **orders** (1 → many) **products** (1 → many) **prices**:
+
+- `db/schema.sql` — full `CREATE TABLE` script.
+- Open it in **MySQL Workbench**: *File → Import → Reverse Engineer MySQL Create Script…* → pick `db/schema.sql` to get the EER model.
+
+```
+orders(id, title, description, date)
+products(id, serial_number, is_new, photo, title, type, specification,
+         guarantee_start, guarantee_end, order_id → orders.id, date)
+prices(id, product_id → products.id, value, symbol, is_default)
+```
+
+## REST API
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/orders` | orders with product count + totals (USD/UAH) |
+| GET | `/api/orders/:id/products` | products of one order |
+| DELETE | `/api/orders/:id` | delete an order (cascades to products/prices) |
+| GET | `/api/products?type=` | all products, optional type filter |
+| GET | `/api/product-types` | distinct product types (for the filter) |
+| WS | `/socket.io` | `sessions` (active count), `orders:changed` |
+
+## Deployment
+
+Runs anywhere Docker runs. The live demo is deployed on an AWS EC2 VDS (Ubuntu) with `docker compose up -d`.
+
+## Project structure
+
+```
+client/     React + TypeScript SPA (Vite)
+server/     Express + Socket.io API
+db/         MySQL schema (schema.sql)
+docs/       task spec + screens
+docker-compose.yml
+```
