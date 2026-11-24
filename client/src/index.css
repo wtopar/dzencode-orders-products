@@ -69,12 +69,13 @@ body {
 /* calendar badge + date/time */
 .topmenu__datetime { display: flex; align-items: center; gap: 9px; }
 .cal {
-  width: 34px; border-radius: 6px; overflow: hidden; text-align: center; line-height: 1;
+  min-width: 34px; border-radius: 6px; overflow: hidden; text-align: center; line-height: 1;
   flex: none; box-shadow: 0 1px 3px rgba(0,0,0,.12);
 }
 .cal__m { background: var(--green); color: #fff; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 2px 0; }
-.cal__d { background: #fff; color: #3f4650; font-size: 14px; font-weight: 700; padding: 2px 0; }
-.cal__w { background: var(--green); color: #fff; font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 2px 0; }
+.cal__dayrow { background: #fff; display: flex; align-items: baseline; justify-content: center; gap: 4px; padding: 3px 7px; }
+.cal__d { color: #3f4650; font-size: 14px; font-weight: 700; }
+.cal__w { color: var(--muted); font-size: 9px; font-weight: 700; text-transform: lowercase; }
 .topmenu__dt-text { text-align: left; }
 .topmenu__time {
   display: inline-flex; align-items: center; gap: 4px; width: fit-content;

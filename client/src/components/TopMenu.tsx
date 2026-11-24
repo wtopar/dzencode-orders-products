@@ -68,8 +68,10 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
         <div className="topmenu__datetime">
           <div className="cal" aria-hidden="true">
             <div className="cal__m">{months[now.getMonth()]}</div>
-            <div className="cal__d">{pad(now.getDate())}</div>
-            <div className="cal__w">{weekdaysShort[now.getDay()]}</div>
+            <div className="cal__dayrow">
+              <span className="cal__d">{pad(now.getDate())}</span>
+              <span className="cal__w">{weekdaysShort[now.getDay()]}</span>
+            </div>
           </div>
           <div className="topmenu__dt-text">
             <div className="topmenu__time">
