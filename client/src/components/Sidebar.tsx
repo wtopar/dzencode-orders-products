@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-export default function Sidebar() {
+export default function Sidebar({ open }: { open: boolean }) {
   const { t } = useTranslation();
   const link = ({ isActive }: { isActive: boolean }) =>
     'sidebar__link' + (isActive ? ' sidebar__link--active' : '');
 
   return (
-    <aside className="sidebar">
+    <aside className={'sidebar' + (open ? ' sidebar--open' : '')}>
       <div className="sidebar__profile">
         <div className="sidebar__avatar" />
         <button className="sidebar__gear" aria-label="settings">⚙</button>

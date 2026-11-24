@@ -5,7 +5,7 @@ const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Втор�
 const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export default function TopMenu() {
+export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) {
   const [now, setNow] = useState(new Date());
   const sessions = useAppSelector((s) => s.sessions.count);
 
@@ -16,6 +16,7 @@ export default function TopMenu() {
 
   return (
     <header className="topmenu">
+      <button className="topmenu__burger" onClick={onToggleMenu} aria-label="menu">☰</button>
       <div className="topmenu__logo">
         <span className="topmenu__logo-badge">▲</span> INVENTORY
       </div>
