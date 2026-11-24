@@ -1,21 +1,21 @@
 import type { Price } from '../types';
 
-const MONTHS_RU = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+const MONTHS_GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-// "06 / 04 / 2017"
+// "29.06.2017"
 export function dateNumeric(value: string): string {
   const d = new Date(value.replace(' ', 'T'));
   if (Number.isNaN(d.getTime())) return value;
-  return `${pad(d.getDate())} / ${pad(d.getMonth() + 1)} / ${d.getFullYear()}`;
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
 }
 
-// "06 / Сен / 2017"
+// "29 июня 2017"
 export function dateNamed(value: string): string {
   const d = new Date(value.replace(' ', 'T'));
   if (Number.isNaN(d.getTime())) return value;
-  return `${pad(d.getDate())} / ${MONTHS_RU[d.getMonth()]} / ${d.getFullYear()}`;
+  return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export function defaultPrice(prices: Price[]): Price | undefined {

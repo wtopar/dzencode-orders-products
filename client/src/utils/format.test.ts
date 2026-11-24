@@ -3,12 +3,12 @@ import { dateNumeric, dateNamed, money, defaultPrice, otherPrice } from './forma
 import type { Price } from '../types';
 
 describe('format utils', () => {
-  it('formats a date as DD / MM / YYYY', () => {
-    expect(dateNumeric('2017-06-29 12:09:33')).toBe('29 / 06 / 2017');
+  it('formats a numeric date as DD.MM.YYYY', () => {
+    expect(dateNumeric('2017-06-29 12:09:33')).toBe('29.06.2017');
   });
 
   it('formats a date with a Russian month name', () => {
-    expect(dateNamed('2017-09-06 00:00:00')).toBe('06 / Сен / 2017');
+    expect(dateNamed('2017-09-06 00:00:00')).toBe('6 сентября 2017');
   });
 
   it('returns the raw value for an invalid date', () => {
