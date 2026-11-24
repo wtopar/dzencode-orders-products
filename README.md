@@ -30,6 +30,7 @@ Fullstack single-page application: a small inventory of **Orders** and the **Pro
 | Backend | Node.js + Express, Socket.io |
 | Database | MySQL 8 (mysql2), normalized `orders → products → prices` |
 | PWA / perf | vite-plugin-pwa, Web Worker, lazy loading, memoization |
+| Auth | JWT (jsonwebtoken) — login + protected delete, form validation |
 | Tests | Vitest + React Testing Library |
 | Infra | Docker + docker-compose (client, server, db) |
 
@@ -106,9 +107,10 @@ prices(id, product_id → products.id, value, symbol, is_default)
 
 | Method | Path | Description |
 |---|---|---|
+| POST | `/api/login` | issue a JWT (demo user **admin / admin**) |
 | GET | `/api/orders` | orders with product count + totals (USD/UAH) |
 | GET | `/api/orders/:id/products` | products of one order |
-| DELETE | `/api/orders/:id` | delete an order (cascades to products/prices) |
+| DELETE | `/api/orders/:id` | delete an order (cascades to products/prices) — **requires JWT** |
 | GET | `/api/products?type=` | all products, optional type filter |
 | GET | `/api/product-types` | distinct product types (for the filter) |
 | WS | `/socket.io` | `sessions` (active count), `orders:changed` |
