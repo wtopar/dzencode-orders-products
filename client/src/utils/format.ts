@@ -30,11 +30,12 @@ export function otherPrice(prices: Price[]): Price | undefined {
   return prices.find((p) => !p.isDefault) || prices[1];
 }
 
-const SYMBOLS: Record<string, string> = { USD: '$', UAH: 'UAH', EUR: '€' };
+const SYMBOLS: Record<string, string> = { USD: '$', UAH: '₴', EUR: '€' };
+const PREFIX = new Set(['USD', 'EUR']);
 
 export function money(p?: Price): string {
   if (!p) return '—';
   const sym = SYMBOLS[p.symbol] || p.symbol;
   const num = p.value.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-  return p.symbol === 'USD' ? `${num} ${sym}` : `${num} ${sym}`;
+  return PREFIX.has(p.symbol) ? `${sym}${num}` : `${num} ${sym}`;
 }

@@ -37,7 +37,7 @@ for (let i = 0; i < 25; i++) {
     date: '2017-06-29 12:09:33',
     price: [
       { value: usd, symbol: 'USD', isDefault: 0 },
-      { value: usd * 26, symbol: 'UAH', isDefault: 1 },
+      { value: usd * 41, symbol: 'UAH', isDefault: 1 },
     ],
   });
 }
