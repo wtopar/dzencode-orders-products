@@ -256,8 +256,8 @@ body {
   .stat-card { min-width: 110px; flex: 1; }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   .topmenu__weekday { display: none; }
-  .topmenu__logo { font-size: 14px; }
+  .topmenu__logo-text { display: none; }
   .stat-card b { font-size: 20px; }
 }

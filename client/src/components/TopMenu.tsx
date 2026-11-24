@@ -32,7 +32,8 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
     <header className="topmenu">
       <button className="topmenu__burger" onClick={onToggleMenu} aria-label="menu">☰</button>
       <div className="topmenu__logo">
-        <span className="topmenu__logo-badge">▲</span> INVENTORY
+        <span className="topmenu__logo-badge">▲</span>
+        <span className="topmenu__logo-text">INVENTORY</span>
       </div>
       <input className="topmenu__search" placeholder="Поиск" />
 
