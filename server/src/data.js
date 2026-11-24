@@ -43,12 +43,12 @@ for (let i = 0; i < 25; i++) {
 }
 
 const users = [
-  { id: 1, name: 'Богдан Лапа', email: 'admin@dzencode.test', role: 'Администратор', status: 'active', created: '2017-06-29 12:09:33' },
-  { id: 2, name: 'Наталья Дзен', email: 'n.dzen@dzencode.test', role: 'Менеджер', status: 'active', created: '2017-07-02 10:15:00' },
-  { id: 3, name: 'Всеволод Кравец', email: 'v.kravets@dzencode.test', role: 'Разработчик', status: 'active', created: '2017-07-14 09:20:00' },
-  { id: 4, name: 'Ирина Бондаренко', email: 'i.bondarenko@dzencode.test', role: 'Кладовщик', status: 'active', created: '2017-08-01 15:45:10' },
-  { id: 5, name: 'Олег Марченко', email: 'o.marchenko@dzencode.test', role: 'Кладовщик', status: 'blocked', created: '2017-09-10 11:00:00' },
-  { id: 6, name: 'Анна Соколова', email: 'a.sokolova@dzencode.test', role: 'Менеджер', status: 'active', created: '2017-10-06 10:30:00' },
+  { id: 1, name: 'Иван Петров', email: 'ivan.petrov@example.com', role: 'Администратор', status: 'active', created: '2017-06-29 12:09:33' },
+  { id: 2, name: 'Мария Иванова', email: 'maria.ivanova@example.com', role: 'Менеджер', status: 'active', created: '2017-07-02 10:15:00' },
+  { id: 3, name: 'Алексей Смирнов', email: 'alexey.smirnov@example.com', role: 'Разработчик', status: 'active', created: '2017-07-14 09:20:00' },
+  { id: 4, name: 'Елена Кузнецова', email: 'elena.kuznetsova@example.com', role: 'Кладовщик', status: 'active', created: '2017-08-01 15:45:10' },
+  { id: 5, name: 'Дмитрий Соколов', email: 'dmitry.sokolov@example.com', role: 'Кладовщик', status: 'blocked', created: '2017-09-10 11:00:00' },
+  { id: 6, name: 'Ольга Новикова', email: 'olga.novikova@example.com', role: 'Менеджер', status: 'active', created: '2017-10-06 10:30:00' },
 ];
 
 export { orders, products, users };
