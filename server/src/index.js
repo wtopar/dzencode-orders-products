@@ -71,6 +71,64 @@ function mapProduct(row, pricesMap) {
   };
 }
 
+// Accept 'YYYY-MM-DD' or a full datetime; normalize to MySQL DATETIME string.
+function toDateTime(v, fallback) {
+  if (v === undefined || v === null || v === '') return fallback;
+  const s = String(v);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return `${s} 00:00:00`;
+  return s.replace('T', ' ').slice(0, 19);
+}
+
+function nowDateTime() {
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
+}
+
+const UAH_RATE = 41; // demo FX rate (USD -> UAH)
+
+// Build the two price rows (USD + default UAH) from the form payload.
+function normalizePrices(body) {
+  if (Array.isArray(body.price) && body.price.length) {
+    return body.price.map((p) => ({
+      value: Number(p.value) || 0,
+      symbol: String(p.symbol || 'USD'),
+      isDefault: p.isDefault ? 1 : 0,
+    }));
+  }
+  const usd = Math.max(0, Number(body.priceUsd) || 0);
+  return [
+    { value: usd, symbol: 'USD', isDefault: 0 },
+    { value: Math.round(usd * UAH_RATE * 100) / 100, symbol: 'UAH', isDefault: 1 },
+  ];
+}
+
+// Return a list of invalid field names for a product payload ([] = valid).
+function validateProduct(body = {}) {
+  const errors = [];
+  if (!body.title || !String(body.title).trim()) errors.push('title');
+  if (body.serialNumber === undefined || body.serialNumber === null ||
+      String(body.serialNumber).trim() === '' || Number.isNaN(Number(body.serialNumber))) {
+    errors.push('serialNumber');
+  }
+  if (!body.type || !String(body.type).trim()) errors.push('type');
+  if (!body.order || Number.isNaN(Number(body.order))) errors.push('order');
+  const g = body.guarantee || {};
+  if (g.start && g.end && new Date(toDateTime(g.end)) < new Date(toDateTime(g.start))) {
+    errors.push('guaranteeEnd');
+  }
+  return errors;
+}
+
+async function fetchProductById(id) {
+  const p = getPool();
+  const [rows] = await p.query(
+    `SELECT pr.*, o.title AS order_title
+     FROM products pr JOIN orders o ON o.id = pr.order_id WHERE pr.id = ?`, [id],
+  );
+  if (!rows.length) return null;
+  const pricesMap = await loadPricesFor([id]);
+  return mapProduct(rows[0], pricesMap);
+}
+
 // --- REST API --------------------------------------------------------------
 // GET /api/orders — list with product count + totals in both currencies
 app.get('/api/orders', async (_req, res, next) => {
@@ -123,6 +181,40 @@ app.delete('/api/orders/:id', requireAuth, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// POST /api/orders — create a new order (приход). Requires JWT.
+app.post('/api/orders', requireAuth, async (req, res, next) => {
+  try {
+    const { title, description = '' } = req.body || {};
+    if (!title || !String(title).trim()) {
+      return res.status(400).json({ error: 'Title is required', fields: ['title'] });
+    }
+    const date = nowDateTime();
+    const [r] = await getPool().query(
+      'INSERT INTO orders (title, description, date) VALUES (?,?,?)',
+      [String(title).trim(), description || '', date],
+    );
+    io.emit('orders:changed');
+    res.status(201).json({ id: r.insertId, title: String(title).trim(), description: description || '', date });
+  } catch (e) { next(e); }
+});
+
+// PUT /api/orders/:id — edit an order. Requires JWT.
+app.put('/api/orders/:id', requireAuth, async (req, res, next) => {
+  try {
+    const { title, description = '' } = req.body || {};
+    if (!title || !String(title).trim()) {
+      return res.status(400).json({ error: 'Title is required', fields: ['title'] });
+    }
+    const p = getPool();
+    const [[existing]] = await p.query('SELECT id FROM orders WHERE id = ?', [req.params.id]);
+    if (!existing) return res.status(404).json({ error: 'Order not found' });
+    await p.query('UPDATE orders SET title = ?, description = ? WHERE id = ?',
+      [String(title).trim(), description || '', req.params.id]);
+    io.emit('orders:changed');
+    res.json({ id: Number(req.params.id), title: String(title).trim(), description: description || '' });
+  } catch (e) { next(e); }
+});
+
 // GET /api/products?type=Monitors — all products, optional type filter
 app.get('/api/products', async (req, res, next) => {
   try {
@@ -150,6 +242,92 @@ app.get('/api/users', async (_req, res, next) => {
   try {
     const [rows] = await getPool().query('SELECT id, name, email, role, status, created FROM users ORDER BY id');
     res.json(rows);
+  } catch (e) { next(e); }
+});
+
+// POST /api/products — create a product (with prices) under an order. Requires JWT.
+app.post('/api/products', requireAuth, async (req, res, next) => {
+  const conn = await getPool().getConnection();
+  try {
+    const b = req.body || {};
+    const errors = validateProduct(b);
+    if (errors.length) return res.status(400).json({ error: 'Validation failed', fields: errors });
+    const [[order]] = await conn.query('SELECT id FROM orders WHERE id = ?', [Number(b.order)]);
+    if (!order) return res.status(400).json({ error: 'Order not found', fields: ['order'] });
+
+    const date = nowDateTime();
+    const gStart = toDateTime(b.guarantee?.start, date);
+    const gEnd = toDateTime(b.guarantee?.end, date);
+    const photo = b.photo || `/img/products/${String(b.type).toLowerCase()}.svg`;
+
+    await conn.beginTransaction();
+    const [r] = await conn.query(
+      `INSERT INTO products
+       (serial_number, is_new, photo, title, type, specification, guarantee_start, guarantee_end, order_id, date)
+       VALUES (?,?,?,?,?,?,?,?,?,?)`,
+      [Number(b.serialNumber), b.isNew ? 1 : 0, photo, String(b.title).trim(), String(b.type).trim(),
+        b.specification || '', gStart, gEnd, Number(b.order), date],
+    );
+    for (const pr of normalizePrices(b)) {
+      await conn.query('INSERT INTO prices (product_id, value, symbol, is_default) VALUES (?,?,?,?)',
+        [r.insertId, pr.value, pr.symbol, pr.isDefault]);
+    }
+    await conn.commit();
+    io.emit('orders:changed');
+    io.emit('products:changed');
+    res.status(201).json(await fetchProductById(r.insertId));
+  } catch (e) {
+    await conn.rollback().catch(() => {});
+    next(e);
+  } finally { conn.release(); }
+});
+
+// PUT /api/products/:id — edit a product (and its prices). Requires JWT.
+app.put('/api/products/:id', requireAuth, async (req, res, next) => {
+  const conn = await getPool().getConnection();
+  try {
+    const b = req.body || {};
+    const errors = validateProduct(b);
+    if (errors.length) return res.status(400).json({ error: 'Validation failed', fields: errors });
+    const [[existing]] = await conn.query('SELECT date FROM products WHERE id = ?', [req.params.id]);
+    if (!existing) return res.status(404).json({ error: 'Product not found' });
+    const [[order]] = await conn.query('SELECT id FROM orders WHERE id = ?', [Number(b.order)]);
+    if (!order) return res.status(400).json({ error: 'Order not found', fields: ['order'] });
+
+    const gStart = toDateTime(b.guarantee?.start, existing.date);
+    const gEnd = toDateTime(b.guarantee?.end, existing.date);
+    const photo = b.photo || `/img/products/${String(b.type).toLowerCase()}.svg`;
+
+    await conn.beginTransaction();
+    await conn.query(
+      `UPDATE products SET serial_number=?, is_new=?, photo=?, title=?, type=?, specification=?,
+       guarantee_start=?, guarantee_end=?, order_id=? WHERE id=?`,
+      [Number(b.serialNumber), b.isNew ? 1 : 0, photo, String(b.title).trim(), String(b.type).trim(),
+        b.specification || '', gStart, gEnd, Number(b.order), req.params.id],
+    );
+    await conn.query('DELETE FROM prices WHERE product_id = ?', [req.params.id]);
+    for (const pr of normalizePrices(b)) {
+      await conn.query('INSERT INTO prices (product_id, value, symbol, is_default) VALUES (?,?,?,?)',
+        [req.params.id, pr.value, pr.symbol, pr.isDefault]);
+    }
+    await conn.commit();
+    io.emit('orders:changed');
+    io.emit('products:changed');
+    res.json(await fetchProductById(req.params.id));
+  } catch (e) {
+    await conn.rollback().catch(() => {});
+    next(e);
+  } finally { conn.release(); }
+});
+
+// DELETE /api/products/:id — remove a product (prices cascade). Requires JWT.
+app.delete('/api/products/:id', requireAuth, async (req, res, next) => {
+  try {
+    const [r] = await getPool().query('DELETE FROM products WHERE id = ?', [req.params.id]);
+    if (r.affectedRows === 0) return res.status(404).json({ error: 'Product not found' });
+    io.emit('orders:changed');
+    io.emit('products:changed');
+    res.json({ ok: true, id: Number(req.params.id) });
   } catch (e) { next(e); }
 });
 

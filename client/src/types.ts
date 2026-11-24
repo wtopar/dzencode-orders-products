@@ -46,3 +46,21 @@ export interface User {
   status: 'active' | 'blocked';
   created: string;
 }
+
+// Payload for creating/editing a product via the API.
+export interface ProductInput {
+  serialNumber: number;
+  title: string;
+  type: string;
+  isNew: number;
+  specification?: string;
+  photo?: string;
+  guarantee: Guarantee;
+  order: number;
+  priceUsd: number;
+}
+
+export interface OrderInput {
+  title: string;
+  description?: string;
+}

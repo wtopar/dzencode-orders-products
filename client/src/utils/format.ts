@@ -22,6 +22,14 @@ export function dateNamed(value: string): string {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
+// "2017-06-29 12:09:33" -> "2017-06-29" for <input type="date">
+export function toDateInput(value?: string): string {
+  if (!value) return '';
+  const d = new Date(value.replace(' ', 'T'));
+  if (Number.isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 export function defaultPrice(prices: Price[]): Price | undefined {
   return prices.find((p) => p.isDefault) || prices[0];
 }

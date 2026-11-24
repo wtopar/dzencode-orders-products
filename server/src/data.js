@@ -1,11 +1,24 @@
 // Seed data for Orders & Products (shape mirrors docs/task-spec/data-model.app.js)
 const TYPES = ['Monitors', 'Laptops', 'Phones', 'Printers', 'Keyboards'];
-const TITLES = {
-  Monitors: 'Gigabyte Technology X58-USB3 (Socket 1366) 6 X58-USB3',
-  Laptops: 'Lenovo ThinkPad X1 Carbon Gen 11',
-  Phones: 'Samsung Galaxy S23 Ultra 512GB',
-  Printers: 'HP LaserJet Pro M404dn',
-  Keyboards: 'Keychron K8 Pro Wireless',
+
+// Per-type catalog: uneven product counts + several real models with base USD
+// prices, so the dashboard charts have genuinely varied data (not flat bars).
+const CATALOG = {
+  Monitors:  { count: 18, models: [
+    ['Dell UltraSharp U2723QE 27" 4K', 620], ['LG 27GP850 Nano IPS 165Hz', 410],
+    ['Gigabyte M28U 28" 4K 144Hz', 560], ['Samsung Odyssey G7 32"', 700]] },
+  Laptops:   { count: 14, models: [
+    ['Lenovo ThinkPad X1 Carbon Gen 11', 1750], ['Apple MacBook Pro 14 M3', 2200],
+    ['Dell XPS 15 9530', 1900], ['ASUS ROG Zephyrus G14', 1650]] },
+  Phones:    { count: 24, models: [
+    ['Samsung Galaxy S23 Ultra 512GB', 1150], ['Apple iPhone 15 Pro 256GB', 1250],
+    ['Google Pixel 8 Pro', 950], ['Xiaomi 13T Pro 12/512', 720]] },
+  Printers:  { count: 8,  models: [
+    ['HP LaserJet Pro M404dn', 330], ['Canon i-SENSYS MF445dw', 420],
+    ['Epson EcoTank L3250', 260]] },
+  Keyboards: { count: 30, models: [
+    ['Keychron K8 Pro Wireless', 110], ['Logitech MX Keys S', 130],
+    ['Razer BlackWidow V4 Pro', 170], ['HyperX Alloy Origins 65', 95]] },
 };
 
 const orders = [
@@ -16,31 +29,42 @@ const orders = [
   { id: 5, title: 'Order 5 — новый квартал', description: 'Поставка №5', date: '2017-10-06 10:30:00' },
 ];
 
-// 25 products distributed across the 5 orders (matches "Продукты / 25" mockup)
+// Products generated from CATALOG: counts differ per type (Keyboards 11 … Printers 3),
+// prices vary per unit, spread unevenly across the 5 orders and across time.
+const START_POOL = ['2021-03-14 10:00:00', '2022-07-01 09:30:00', '2023-01-20 12:00:00', '2023-11-05 15:20:00', '2024-05-18 08:45:00'];
+const END_POOL   = ['2024-03-14 10:00:00', '2025-07-01 09:30:00', '2026-01-20 12:00:00', '2025-11-05 15:20:00', '2027-05-18 08:45:00'];
+
 const products = [];
 let pid = 1;
-for (let i = 0; i < 25; i++) {
-  const type = TYPES[i % TYPES.length];
-  const orderId = (i % orders.length) + 1;
-  const isNew = i % 3 === 0 ? 1 : 0;
-  const usd = 100 + (i % 7) * 50;
-  products.push({
-    id: pid++,
-    serialNumber: 1234 + i,
-    isNew,
-    photo: `/img/products/${type.toLowerCase()}.svg`,
-    title: TITLES[type],
-    type,
-    specification: `Specification ${i + 1}`,
-    guarantee: { start: '2017-06-29 12:09:33', end: '2025-06-08 12:09:33' },
-    order: orderId,
-    date: '2017-06-29 12:09:33',
-    price: [
-      { value: usd, symbol: 'USD', isDefault: 0 },
-      { value: usd * 41, symbol: 'UAH', isDefault: 1 },
-    ],
-  });
-}
+let serial = 1024;
+TYPES.forEach((type, ti) => {
+  const { count, models } = CATALOG[type];
+  for (let k = 0; k < count; k++) {
+    const [name, base] = models[k % models.length];
+    // deterministic ±12% variation so no two units share a price
+    const variation = ((k * 37 + ti * 13) % 25) - 12;
+    const usd = Math.max(20, Math.round((base * (1 + variation / 100)) / 5) * 5);
+    const isNew = (k + ti) % 3 === 0 ? 1 : 0;
+    const orderId = ((k * 2 + ti) % orders.length) + 1;
+    const gi = (k + ti) % START_POOL.length;
+    products.push({
+      id: pid++,
+      serialNumber: serial++,
+      isNew,
+      photo: `/img/products/${type.toLowerCase()}.svg`,
+      title: name,
+      type,
+      specification: `${name} — ${isNew ? 'new, sealed' : 'used, tested'}`,
+      guarantee: { start: START_POOL[gi], end: END_POOL[gi] },
+      order: orderId,
+      date: START_POOL[gi],
+      price: [
+        { value: usd, symbol: 'USD', isDefault: 0 },
+        { value: usd * 41, symbol: 'UAH', isDefault: 1 },
+      ],
+    });
+  }
+});
 
 const users = [
   { id: 1, name: 'Иван Петров', email: 'ivan.petrov@example.com', role: 'Администратор', status: 'active', created: '2017-06-29 12:09:33' },

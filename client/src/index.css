@@ -322,3 +322,37 @@ body {
 @media (max-width: 480px) {
   .stat-card b { font-size: 20px; }
 }
+
+/* ---- Create / Edit forms ---- */
+.form-modal { background: #fff; border-radius: 10px; padding: 22px 26px; width: 460px; max-width: 94vw; box-shadow: 0 12px 44px rgba(0,0,0,.22); animation: pop .18s ease; max-height: 88vh; overflow-y: auto; }
+.form-modal--wide { width: 640px; }
+.form-modal__title { margin: 0 0 18px; font-size: 18px; color: #3f4650; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-grid .form-field { margin-bottom: 0; }
+.form-field--full { grid-column: 1 / -1; }
+.form-field__label { font-size: 12px; color: var(--muted); }
+.form-input { border: 1px solid var(--line); border-radius: 8px; padding: 9px 12px; font-size: 14px; font-family: inherit; color: var(--text); background: #fff; width: 100%; }
+.form-input:focus { outline: none; border-color: var(--green); }
+textarea.form-input { resize: vertical; }
+.form-input--error { border-color: #e53935; background: #fff6f6; }
+.form-check { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.form-check input { width: 16px; height: 16px; }
+.form-error { color: #e53935; font-size: 13px; margin: 4px 0 0; }
+.form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+
+/* ---- Edit buttons + clickable product rows ---- */
+.order-row__edit, .orders__edit, .pcard__edit {
+  width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: #f3f5f7; border-radius: 8px; color: #8d99a6; cursor: pointer; flex: none;
+  font-size: 15px; transition: background .15s, color .15s;
+}
+.order-row__edit:hover, .orders__edit:hover, .pcard__edit:hover { background: #e9f3d7; color: var(--green-dark); }
+.orders__edit { width: 28px; height: 28px; margin-left: 10px; }
+.orders__detail-title { display: flex; align-items: center; }
+.product-mini--clickable { cursor: pointer; }
+.product-mini--clickable:hover { background: #f1f5f9; }
+
+/* ---- Products toolbar + lazy-load ---- */
+.products__tools { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.products__more { display: flex; justify-content: center; padding: 22px 0 8px; }
