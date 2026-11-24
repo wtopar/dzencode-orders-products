@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../store';
 import { fetchProducts, fetchTypes, setFilter } from '../store/productsSlice';
 import { dateNumeric, dateNamed, defaultPrice, otherPrice, money } from '../utils/format';
+import { TrashIcon, MonitorIcon } from '../components/Icons';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
@@ -32,7 +33,7 @@ export default function ProductsPage() {
         {items.map((p) => (
           <div key={p.id} className="product-row">
             <span className="product-row__status" />
-            <span className="product-row__img">🖥</span>
+            <span className="product-row__img"><MonitorIcon /></span>
             <span className="product-row__title">
               {p.title}<br /><small className="muted">SN-{p.serialNumber}</small>
             </span>
@@ -50,7 +51,7 @@ export default function ProductsPage() {
             </span>
             <span className="product-row__order">{p.orderTitle}</span>
             <span className="product-row__date muted">{dateNamed(p.date)}</span>
-            <button className="product-row__del" aria-label="delete">🗑</button>
+            <button className="product-row__del" aria-label="delete" title="Удалить"><TrashIcon /></button>
           </div>
         ))}
       </div>
