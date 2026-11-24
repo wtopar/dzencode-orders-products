@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, CartesianGrid,
@@ -9,6 +10,7 @@ import type { TypeAgg } from '../workers/aggregate.worker';
 const COLORS = ['#86b817', '#4a90d9', '#e8a33d', '#d9534f', '#6f42c1', '#20c997'];
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const [data, setData] = useState<TypeAgg[]>([]);
 
   useEffect(() => {
@@ -27,30 +29,30 @@ export default function DashboardPage() {
 
   return (
     <div className="dashboard">
-      <h1 className="page-title">Дашборд</h1>
+      <h1 className="page-title">{t('dashboard.title')}</h1>
 
       <div className="dashboard__stats">
-        <div className="stat-card"><span>Типов</span><b>{data.length}</b></div>
-        <div className="stat-card"><span>Продуктов</span><b>{totalProducts}</b></div>
-        <div className="stat-card"><span>Сумма, $</span><b>{totalValue.toLocaleString('ru-RU')}</b></div>
+        <div className="stat-card"><span>{t('dashboard.types')}</span><b>{data.length}</b></div>
+        <div className="stat-card"><span>{t('dashboard.products')}</span><b>{totalProducts}</b></div>
+        <div className="stat-card"><span>{t('dashboard.sum')}</span><b>{totalValue.toLocaleString('ru-RU')}</b></div>
       </div>
 
       <div className="dashboard__charts">
         <div className="chart-box">
-          <h3>Продуктов по типу</h3>
+          <h3>{t('dashboard.byType')}</h3>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="type" fontSize={12} />
               <YAxis allowDecimals={false} fontSize={12} />
               <Tooltip />
-              <Bar dataKey="count" name="Кол-во" fill="#86b817" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="count" name={t('dashboard.count')} fill="#86b817" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         <div className="chart-box">
-          <h3>Стоимость по типу, $</h3>
+          <h3>{t('dashboard.valueByType')}</h3>
           <ResponsiveContainer width="100%" height={260}>
             <PieChart>
               <Pie data={data} dataKey="totalUsd" nameKey="type" outerRadius={95} label>

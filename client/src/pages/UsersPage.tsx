@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../store';
 import { getUsers } from '../api';
 import { dateNamed } from '../utils/format';
 import type { User } from '../types';
@@ -10,8 +12,9 @@ function initials(name: string) {
 }
 
 export default function UsersPage() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
-  const [search, setSearch] = useState('');
+  const search = useAppSelector((s) => s.ui.search);
   const [role, setRole] = useState('');
 
   useEffect(() => { getUsers().then(setUsers); }, []);
@@ -28,14 +31,10 @@ export default function UsersPage() {
   return (
     <div className="users">
       <div className="users__head">
-        <h1 className="page-title">Пользователи <span className="count-badge">{filtered.length}</span></h1>
+        <h1 className="page-title">{t('users.title')} <span className="count-badge">{filtered.length}</span></h1>
         <div className="filterbar">
-          <input
-            className="filterbar__search" placeholder="Поиск по имени или email"
-            value={search} onChange={(e) => setSearch(e.target.value)}
-          />
           <select className="filterbar__select" value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="">Все роли</option>
+            <option value="">{t('users.allRoles')}</option>
             {roles.map((r) => <option key={r} value={r}>{r}</option>)}
           </select>
         </div>
@@ -53,14 +52,14 @@ export default function UsersPage() {
               <div className="ucard__meta">
                 <span className="ucard__role">{u.role}</span>
                 <span className={'pill ' + (u.status === 'active' ? 'pill--ok' : 'pill--warn')}>
-                  {u.status === 'active' ? 'Активен' : 'Заблокирован'}
+                  {u.status === 'active' ? t('status.active') : t('status.blocked')}
                 </span>
               </div>
-              <div className="ucard__since">В системе с {dateNamed(u.created)}</div>
+              <div className="ucard__since">{t('users.since')} {dateNamed(u.created)}</div>
             </div>
           </article>
         ))}
-        {filtered.length === 0 && <div className="empty">Никого не найдено</div>}
+        {filtered.length === 0 && <div className="empty">{t('users.empty')}</div>}
       </div>
     </div>
   );

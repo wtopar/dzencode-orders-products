@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../store';
 import { logout } from '../store/authSlice';
+import { setSearch } from '../store/uiSlice';
 
-const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+const WEEKDAYS_RU = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MONTHS_RU = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const pad = (n: number) => String(n).padStart(2, '0');
 
 function LogoutIcon() {
@@ -28,10 +32,16 @@ function ClockIcon() {
 }
 
 export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) {
+  const { t, i18n } = useTranslation();
   const [now, setNow] = useState(new Date());
   const sessions = useAppSelector((s) => s.sessions.count);
   const user = useAppSelector((s) => s.auth.user);
+  const search = useAppSelector((s) => s.ui.search);
   const dispatch = useAppDispatch();
+
+  const en = (i18n.language || 'ru').startsWith('en');
+  const weekdays = en ? WEEKDAYS_EN : WEEKDAYS_RU;
+  const months = en ? MONTHS_EN : MONTHS_RU;
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
@@ -45,7 +55,10 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
         <span className="topmenu__logo-badge">▲</span>
         <span className="topmenu__logo-text">INVENTORY</span>
       </div>
-      <input className="topmenu__search" placeholder="Поиск" />
+      <input
+        className="topmenu__search" placeholder={t('common.search')}
+        value={search} onChange={(e) => dispatch(setSearch(e.target.value))}
+      />
 
       <div className="topmenu__right">
         <div className="topmenu__sessions" title="Активных вкладок">
@@ -54,11 +67,11 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
 
         <div className="topmenu__datetime">
           <div className="cal" aria-hidden="true">
-            <div className="cal__m">{MONTHS[now.getMonth()]}</div>
+            <div className="cal__m">{months[now.getMonth()]}</div>
             <div className="cal__d">{pad(now.getDate())}</div>
           </div>
           <div className="topmenu__dt-text">
-            <div className="topmenu__weekday">{WEEKDAYS[now.getDay()]}</div>
+            <div className="topmenu__weekday">{weekdays[now.getDay()]}</div>
             <div className="topmenu__time">
               <ClockIcon />
               <span>{pad(now.getHours())}:{pad(now.getMinutes())}<span className="topmenu__secs">:{pad(now.getSeconds())}</span></span>

@@ -9,14 +9,24 @@ export default function ProductsPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { items, types, filterType } = useAppSelector((s) => s.products);
+  const search = useAppSelector((s) => s.ui.search);
 
   useEffect(() => { dispatch(fetchTypes()); }, [dispatch]);
   useEffect(() => { dispatch(fetchProducts(filterType)); }, [dispatch, filterType]);
 
+  const q = search.trim().toLowerCase();
+  const visible = q
+    ? items.filter((p) =>
+        p.title.toLowerCase().includes(q) ||
+        String(p.serialNumber).includes(q) ||
+        p.type.toLowerCase().includes(q) ||
+        (p.orderTitle || '').toLowerCase().includes(q))
+    : items;
+
   return (
     <div className="products">
       <div className="products__head">
-        <h1 className="page-title">{t('products.title')} <span className="count-badge">{items.length}</span></h1>
+        <h1 className="page-title">{t('products.title')} <span className="count-badge">{visible.length}</span></h1>
         <label className="products__filter">
           {t('products.type')}:
           <select value={filterType} onChange={(e) => dispatch(setFilter(e.target.value))}>
@@ -27,7 +37,7 @@ export default function ProductsPage() {
       </div>
 
       <div className="products__grid">
-        {items.map((p) => {
+        {visible.map((p) => {
           const usd = p.price.find((x) => x.symbol === 'USD');
           const uah = p.price.find((x) => x.symbol === 'UAH');
           return (
@@ -53,31 +63,32 @@ export default function ProductsPage() {
                   <span className="field__val">{p.type}</span>
                 </div>
                 <div className="field">
-                  <span className="field__label">Состояние</span>
+                  <span className="field__label">{t('products.condition')}</span>
                   <span className="field__val">{p.isNew ? t('status.new') : t('status.used')}</span>
                 </div>
                 <div className="field">
-                  <span className="field__label">Гарантия</span>
+                  <span className="field__label">{t('products.guarantee')}</span>
                   <span className="field__val">{dateNumeric(p.guarantee.start)} — {dateNumeric(p.guarantee.end)}</span>
                 </div>
                 <div className="field">
-                  <span className="field__label">Приход</span>
+                  <span className="field__label">{t('products.order')}</span>
                   <span className="field__val field__val--accent">{p.orderTitle}</span>
                 </div>
                 <div className="field">
-                  <span className="field__label">Цена</span>
+                  <span className="field__label">{t('products.price')}</span>
                   <span className="field__val">
                     <span className="muted">{money(usd)}</span> <b>{money(uah)}</b>
                   </span>
                 </div>
                 <div className="field">
-                  <span className="field__label">Добавлен</span>
+                  <span className="field__label">{t('products.added')}</span>
                   <span className="field__val">{dateNamed(p.date)}</span>
                 </div>
               </div>
             </article>
           );
         })}
+        {visible.length === 0 && <div className="empty">{t('common.nothingFound')}</div>}
       </div>
     </div>
   );

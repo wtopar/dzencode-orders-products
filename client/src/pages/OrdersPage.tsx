@@ -11,9 +11,13 @@ export default function OrdersPage() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { items, selectedId, selectedProducts } = useAppSelector((s) => s.orders);
+  const search = useAppSelector((s) => s.ui.search);
   const [toDelete, setToDelete] = useState<Order | null>(null);
 
   useEffect(() => { dispatch(fetchOrders()); }, [dispatch]);
+
+  const q = search.trim().toLowerCase();
+  const visible = q ? items.filter((o) => o.title.toLowerCase().includes(q)) : items;
 
   const open = (id: number) => {
     if (selectedId === id) { dispatch(selectOrder(null)); return; }
@@ -28,10 +32,10 @@ export default function OrdersPage() {
       <div className="orders__list">
         <h1 className="page-title">
           <button className="page-title__add">＋</button>
-          {t('orders.title')} <span className="count-badge">{items.length}</span>
+          {t('orders.title')} <span className="count-badge">{visible.length}</span>
         </h1>
 
-        {items.map((o) => {
+        {visible.map((o) => {
           const usd = o.total.find((x) => x.symbol === 'USD');
           const uah = o.total.find((x) => x.symbol === 'UAH');
           const isActive = o.id === selectedId;
@@ -108,7 +112,7 @@ export default function OrdersPage() {
             try {
               await dispatch(removeOrder(toDelete.id)).unwrap();
             } catch {
-              alert('Для удаления нужно войти. Демо-доступ: admin / admin.');
+              alert(t('orders.needLogin'));
             }
           }
           setToDelete(null);
