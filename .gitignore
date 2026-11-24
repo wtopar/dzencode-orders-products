@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.env
+*.local
+.DS_Store
+npm-debug.log*
+docker-data/
+
+# never commit secrets or local-only folders
+deploy/
+*.pem
+*.ppk
+_old/
+_install.log
+*.log
