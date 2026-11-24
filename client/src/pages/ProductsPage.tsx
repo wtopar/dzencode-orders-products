@@ -75,8 +75,6 @@ export default function ProductsPage() {
                   <span className="field__val">{dateNamed(p.date)}</span>
                 </div>
               </div>
-
-              <button className="pcard__del" aria-label="delete" title="Удалить"><TrashIcon /></button>
             </article>
           );
         })}
