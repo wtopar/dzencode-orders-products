@@ -4,8 +4,6 @@ import { useAppDispatch, useAppSelector } from '../store';
 import { logout } from '../store/authSlice';
 import { setSearch } from '../store/uiSlice';
 
-const WEEKDAYS_SHORT_RU = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
-const WEEKDAYS_SHORT_EN = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const MONTHS_RU = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -40,7 +38,6 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
   const dispatch = useAppDispatch();
 
   const en = (i18n.language || 'ru').startsWith('en');
-  const weekdaysShort = en ? WEEKDAYS_SHORT_EN : WEEKDAYS_SHORT_RU;
   const months = en ? MONTHS_EN : MONTHS_RU;
 
   useEffect(() => {
@@ -67,10 +64,7 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
 
         <div className="topmenu__datetime">
           <div className="cal" aria-hidden="true">
-            <div className="cal__top">
-              <span className="cal__m">{months[now.getMonth()]}</span>
-              <span className="cal__w">{weekdaysShort[now.getDay()]}</span>
-            </div>
+            <div className="cal__m">{months[now.getMonth()]}</div>
             <div className="cal__d">{pad(now.getDate())}</div>
           </div>
           <div className="topmenu__dt-text">

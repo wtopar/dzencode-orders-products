@@ -72,8 +72,7 @@ body {
   min-width: 34px; border-radius: 6px; overflow: hidden; text-align: center; line-height: 1;
   flex: none; box-shadow: 0 1px 3px rgba(0,0,0,.12);
 }
-.cal__top { background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 2px 7px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
-.cal__w { opacity: .85; }
+.cal__m { background: var(--green); color: #fff; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; padding: 2px 0; }
 .cal__d { background: #fff; color: #3f4650; font-size: 14px; font-weight: 700; padding: 3px 0; }
 .topmenu__dt-text { text-align: left; }
 .topmenu__time {
@@ -313,7 +312,6 @@ body {
   .topmenu { padding: 0 14px; gap: 12px; }
   .topmenu__right { gap: 16px; }
   .topmenu__datetime { gap: 8px; }
-  .cal__w { display: none; }
   .topmenu__logo-text { display: none; }
   .topmenu__secs { display: none; }
   .topmenu__user-icon { display: none; }
