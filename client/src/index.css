@@ -62,7 +62,7 @@ body {
   flex: 1; max-width: 420px; height: 38px; border: 1px solid var(--line);
   border-radius: 4px; padding: 0 14px; background: #f6f8fa;
 }
-.topmenu__right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
+.topmenu__right { margin-left: auto; display: flex; align-items: center; gap: 26px; }
 .topmenu__sessions { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--green-dark); }
 .topmenu__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); display: inline-block; }
 
@@ -311,7 +311,7 @@ body {
 
 @media (max-width: 560px) {
   .topmenu { padding: 0 14px; gap: 12px; }
-  .topmenu__right { gap: 12px; }
+  .topmenu__right { gap: 16px; }
   .topmenu__datetime { gap: 8px; }
   .topmenu__logo-text { display: none; }
   .topmenu__weekday { display: none; }
