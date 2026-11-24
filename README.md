@@ -2,7 +2,7 @@
 
 Fullstack single-page application: a small inventory of **Orders** and the **Products** inside them.
 
-**Live demo:** http://13.51.72.52
+**Live demo:** https://darthvader.pp.ua
 **Stack:** React 19 + TypeScript (Vite) · Redux Toolkit · React Router · Socket.io · Node.js/Express · MySQL 8 · Docker.
 
 ![Orders](docs/task-spec/screens/screen_4.png)
@@ -118,7 +118,7 @@ prices(id, product_id → products.id, value, symbol, is_default)
 
 ## Deployment
 
-Runs anywhere Docker runs. The live demo is deployed on an AWS EC2 VDS (Ubuntu) with `docker compose up -d`.
+Runs anywhere Docker runs. The live demo is deployed on an AWS EC2 VDS (Ubuntu) with `docker compose up -d`, served over HTTPS at **https://darthvader.pp.ua** (via Cloudflare).
 
 ## Project structure
 
