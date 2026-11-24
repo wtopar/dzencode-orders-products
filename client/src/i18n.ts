@@ -4,7 +4,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   ru: {
     translation: {
-      nav: { orders: 'Приход', groups: 'Группы', products: 'Продукты', users: 'Пользователи', settings: 'Настройки' },
+      nav: { orders: 'Приход', dashboard: 'Дашборд', groups: 'Группы', products: 'Продукты', users: 'Пользователи', settings: 'Настройки' },
       orders: { title: 'Приходы', products: 'Продукта', add: 'Добавить продукт' },
       products: { title: 'Продукты', type: 'Тип', spec: 'Спецификация', all: 'Все типы' },
       status: { new: 'новый', used: 'Б / У', free: 'свободен', repair: 'В ремонте' },
@@ -14,7 +14,7 @@ const resources = {
   },
   en: {
     translation: {
-      nav: { orders: 'Orders', groups: 'Groups', products: 'Products', users: 'Users', settings: 'Settings' },
+      nav: { orders: 'Orders', dashboard: 'Dashboard', groups: 'Groups', products: 'Products', users: 'Users', settings: 'Settings' },
       orders: { title: 'Orders', products: 'Products', add: 'Add product' },
       products: { title: 'Products', type: 'Type', spec: 'Specification', all: 'All types' },
       status: { new: 'new', used: 'Used', free: 'free', repair: 'In repair' },

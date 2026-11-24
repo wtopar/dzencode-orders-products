@@ -9,6 +9,7 @@ import Layout from './components/Layout';
 // Lazy Loading marker: route-level code splitting
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
 export default function App() {
   const dispatch = useAppDispatch();
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="/" element={<Navigate to="/orders" replace />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="*" element={<Navigate to="/orders" replace />} />
           </Routes>
         </Suspense>

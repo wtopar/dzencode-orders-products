@@ -133,6 +133,15 @@ body {
 .confirm-modal__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); }
 .confirm-modal__actions { display: flex; justify-content: flex-end; gap: 12px; }
 
+/* ---- Dashboard ---- */
+.dashboard__stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.stat-card { background: var(--card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 16px 22px; min-width: 150px; display: flex; flex-direction: column; gap: 4px; }
+.stat-card span { color: var(--muted); font-size: 13px; }
+.stat-card b { font-size: 26px; color: #3f4650; }
+.dashboard__charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.chart-box { background: var(--card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 18px 20px; }
+.chart-box h3 { font-size: 15px; margin: 0 0 12px; color: #3f4650; }
+
 /* ---- Animations ---- */
 .route-fade { animation: fadeIn .35s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

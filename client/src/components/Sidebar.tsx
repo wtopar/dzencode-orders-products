@@ -14,7 +14,7 @@ export default function Sidebar() {
       </div>
       <nav className="sidebar__nav">
         <NavLink to="/orders" className={link}>{t('nav.orders')}</NavLink>
-        <span className="sidebar__link sidebar__link--disabled">{t('nav.groups')}</span>
+        <NavLink to="/dashboard" className={link}>{t('nav.dashboard')}</NavLink>
         <NavLink to="/products" className={link}>{t('nav.products')}</NavLink>
         <span className="sidebar__link sidebar__link--disabled">{t('nav.users')}</span>
         <span className="sidebar__link sidebar__link--disabled">{t('nav.settings')}</span>
