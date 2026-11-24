@@ -7,6 +7,17 @@ const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Втор�
 const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 const pad = (n: number) => String(n).padStart(2, '0');
 
+function LogoutIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+}
+
 export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) {
   const [now, setNow] = useState(new Date());
   const [showLogin, setShowLogin] = useState(false);
@@ -26,28 +37,37 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
         <span className="topmenu__logo-badge">▲</span> INVENTORY
       </div>
       <input className="topmenu__search" placeholder="Поиск" />
+
       <div className="topmenu__right">
+        <div className="topmenu__sessions" title="Активных вкладок">
+          <span className="topmenu__dot" /> {sessions}
+        </div>
+
+        <div className="topmenu__datetime">
+          <div className="cal" aria-hidden="true">
+            <div className="cal__m">{MONTHS[now.getMonth()]}</div>
+            <div className="cal__d">{pad(now.getDate())}</div>
+          </div>
+          <div className="topmenu__dt-text">
+            <div className="topmenu__weekday">{WEEKDAYS[now.getDay()]}</div>
+            <div className="topmenu__time">{pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}</div>
+          </div>
+        </div>
+
         {user ? (
           <div className="topmenu__user">
-            <span title="Пользователь">👤 {user}</span>
-            <button className="topmenu__logout" onClick={() => dispatch(logout())}>Выйти</button>
+            <span className="topmenu__user-icon">👤</span>
+            <span className="topmenu__user-name">{user}</span>
+            <button className="topmenu__logout" title="Выйти" aria-label="Выйти"
+              onClick={() => dispatch(logout())}>
+              <LogoutIcon />
+            </button>
           </div>
         ) : (
           <button className="topmenu__login" onClick={() => setShowLogin(true)}>Войти</button>
         )}
-        <div className="topmenu__sessions" title="Активных вкладок">
-          <span className="topmenu__dot" /> {sessions}
-        </div>
-        <div className="topmenu__clock">
-          <div className="topmenu__weekday">{WEEKDAYS[now.getDay()]}</div>
-          <div className="topmenu__date">
-            {pad(now.getDate())} {MONTHS[now.getMonth()]}, {now.getFullYear()}
-            <span className="topmenu__time">
-              {' '}⏱ {pad(now.getHours())}:{pad(now.getMinutes())}
-            </span>
-          </div>
-        </div>
       </div>
+
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </header>
   );

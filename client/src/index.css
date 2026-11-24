@@ -62,12 +62,30 @@ body {
   flex: 1; max-width: 420px; height: 38px; border: 1px solid var(--line);
   border-radius: 4px; padding: 0 14px; background: #f6f8fa;
 }
-.topmenu__right { margin-left: auto; display: flex; align-items: center; gap: 22px; }
+.topmenu__right { margin-left: auto; display: flex; align-items: center; gap: 18px; }
 .topmenu__sessions { display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--green-dark); }
 .topmenu__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); display: inline-block; }
-.topmenu__weekday { font-weight: 700; font-size: 13px; }
-.topmenu__date { font-size: 12px; color: var(--muted); }
-.topmenu__time { color: var(--green-dark); }
+
+/* calendar badge + date/time */
+.topmenu__datetime { display: flex; align-items: center; gap: 9px; }
+.cal {
+  width: 40px; border-radius: 7px; overflow: hidden; text-align: center; line-height: 1;
+  flex: none; box-shadow: 0 1px 3px rgba(0,0,0,.12);
+}
+.cal__m { background: var(--green); color: #fff; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; padding: 3px 0; }
+.cal__d { background: #fff; color: #3f4650; font-size: 17px; font-weight: 700; padding: 3px 0; }
+.topmenu__dt-text { text-align: left; }
+.topmenu__weekday { font-weight: 700; font-size: 13px; color: #3f4650; }
+.topmenu__time { color: var(--green-dark); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+/* user block (far right) */
+.topmenu__user { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.topmenu__user-name { font-weight: 600; color: #3f4650; }
+.topmenu__logout {
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); background: #fff; border-radius: 7px; color: #90a0ad; cursor: pointer; padding: 0;
+}
+.topmenu__logout:hover { border-color: #e53935; color: #e53935; }
 
 /* ---- Page title ---- */
 .page-title { font-size: 30px; font-weight: 700; color: #3f4650; display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
@@ -145,13 +163,11 @@ body {
 .chart-box h3 { font-size: 15px; margin: 0 0 12px; color: #3f4650; }
 
 /* ---- Auth ---- */
-.topmenu__login, .topmenu__logout {
+.topmenu__login {
   border: 1px solid var(--green); background: #fff; color: var(--green-dark);
   border-radius: 6px; padding: 6px 14px; font-weight: 600; cursor: pointer; font-size: 13px;
 }
-.topmenu__login:hover, .topmenu__logout:hover { background: var(--green); color: #fff; }
-.topmenu__user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-.topmenu__logout { padding: 4px 10px; }
+.topmenu__login:hover { background: var(--green); color: #fff; }
 .login-modal { min-width: 340px; display: flex; flex-direction: column; gap: 12px; }
 .login-modal__title { margin: 0; font-size: 20px; }
 .login-modal__input { height: 42px; border: 1px solid var(--line); border-radius: 6px; padding: 0 14px; font-size: 14px; }
