@@ -28,7 +28,7 @@ export default function OrdersPage() {
       <div className="orders__list">
         <h1 className="page-title">
           <button className="page-title__add">＋</button>
-          {t('orders.title')} / {items.length}
+          {t('orders.title')} <span className="count-badge">{items.length}</span>
         </h1>
 
         {items.map((o) => {

@@ -37,3 +37,12 @@ export interface Order {
   productCount: number;
   total: OrderTotal[];
 }
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: 'active' | 'blocked';
+  created: string;
+}

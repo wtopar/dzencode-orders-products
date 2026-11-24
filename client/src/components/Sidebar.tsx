@@ -16,8 +16,8 @@ export default function Sidebar({ open }: { open: boolean }) {
         <NavLink to="/orders" className={link}>{t('nav.orders')}</NavLink>
         <NavLink to="/dashboard" className={link}>{t('nav.dashboard')}</NavLink>
         <NavLink to="/products" className={link}>{t('nav.products')}</NavLink>
-        <span className="sidebar__link sidebar__link--disabled">{t('nav.users')}</span>
-        <span className="sidebar__link sidebar__link--disabled">{t('nav.settings')}</span>
+        <NavLink to="/users" className={link}>{t('nav.users')}</NavLink>
+        <NavLink to="/settings" className={link}>{t('nav.settings')}</NavLink>
       </nav>
     </aside>
   );

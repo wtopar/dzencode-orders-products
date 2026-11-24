@@ -145,6 +145,14 @@ app.get('/api/product-types', async (_req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// GET /api/users — list of users
+app.get('/api/users', async (_req, res, next) => {
+  try {
+    const [rows] = await getPool().query('SELECT id, name, email, role, status, created FROM users ORDER BY id');
+    res.json(rows);
+  } catch (e) { next(e); }
+});
+
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // error handler

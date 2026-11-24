@@ -11,6 +11,8 @@ import LoginPage from './pages/LoginPage';
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
+const UsersPage = lazy(() => import('./pages/UsersPage'));
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 function ProtectedLayout() {
   return (
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/products" element={<ProductsPage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Order, Product } from './types';
+import type { Order, Product, User } from './types';
 
 // Relative baseURL: dev -> Vite proxy, prod -> nginx proxy (same origin)
 const api = axios.create({ baseURL: '/api' });
@@ -20,5 +20,6 @@ export const getProducts = (type?: string) =>
   api.get<Product[]>('/products', { params: type ? { type } : {} }).then((r) => r.data);
 export const getProductTypes = () =>
   api.get<string[]>('/product-types').then((r) => r.data);
+export const getUsers = () => api.get<User[]>('/users').then((r) => r.data);
 
 export default api;

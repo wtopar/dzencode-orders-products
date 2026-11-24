@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-import { orders, products } from './data.js';
+import { orders, products, users } from './data.js';
 
 const {
   DB_HOST = 'localhost',
@@ -74,12 +74,20 @@ async function createSchema() {
     CONSTRAINT fk_prices_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     INDEX idx_prices_product (product_id)
   ) ENGINE=InnoDB`);
+  await p.query(`CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    role VARCHAR(64) NOT NULL,
+    status ENUM('active','blocked') NOT NULL DEFAULT 'active',
+    created DATETIME NOT NULL
+  ) ENGINE=InnoDB`);
 }
 
 async function seedIfEmpty() {
   const p = getPool();
   const [[{ cnt }]] = await p.query('SELECT COUNT(*) AS cnt FROM orders');
-  if (cnt > 0) return;
+  if (cnt === 0) {
   console.log('Seeding database...');
   for (const o of orders) {
     await p.query('INSERT INTO orders (id, title, description, date) VALUES (?,?,?,?)', [
@@ -101,6 +109,16 @@ async function seedIfEmpty() {
     }
   }
   console.log('Seed complete.');
+  }
+
+  const [[{ ucnt }]] = await p.query('SELECT COUNT(*) AS ucnt FROM users');
+  if (ucnt === 0) {
+    console.log('Seeding users...');
+    for (const u of users) {
+      await p.query('INSERT INTO users (id, name, email, role, status, created) VALUES (?,?,?,?,?,?)',
+        [u.id, u.name, u.email, u.role, u.status, u.created]);
+    }
+  }
 }
 
 export async function initDb() {

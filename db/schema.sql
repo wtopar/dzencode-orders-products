@@ -45,3 +45,12 @@ CREATE TABLE prices (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
   INDEX idx_prices_product (product_id)
 ) ENGINE=InnoDB;
+
+CREATE TABLE users (
+  id      INT AUTO_INCREMENT PRIMARY KEY,
+  name    VARCHAR(255) NOT NULL,
+  email   VARCHAR(255) NOT NULL UNIQUE,
+  role    VARCHAR(64) NOT NULL,
+  status  ENUM('active','blocked') NOT NULL DEFAULT 'active',
+  created DATETIME NOT NULL
+) ENGINE=InnoDB;

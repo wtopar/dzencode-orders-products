@@ -16,7 +16,7 @@ export default function ProductsPage() {
   return (
     <div className="products">
       <div className="products__head">
-        <h1 className="page-title">{t('products.title')} / {items.length}</h1>
+        <h1 className="page-title">{t('products.title')} <span className="count-badge">{items.length}</span></h1>
         <label className="products__filter">
           {t('products.type')}:
           <select value={filterType} onChange={(e) => dispatch(setFilter(e.target.value))}>
