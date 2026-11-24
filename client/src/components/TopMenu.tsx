@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store';
 import { logout } from '../store/authSlice';
-import LoginModal from './LoginModal';
 
 const WEEKDAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
@@ -20,7 +19,6 @@ function LogoutIcon() {
 
 export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) {
   const [now, setNow] = useState(new Date());
-  const [showLogin, setShowLogin] = useState(false);
   const sessions = useAppSelector((s) => s.sessions.count);
   const user = useAppSelector((s) => s.auth.user);
   const dispatch = useAppDispatch();
@@ -54,21 +52,15 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
           </div>
         </div>
 
-        {user ? (
-          <div className="topmenu__user">
-            <span className="topmenu__user-icon">👤</span>
-            <span className="topmenu__user-name">{user}</span>
-            <button className="topmenu__logout" title="Выйти" aria-label="Выйти"
-              onClick={() => dispatch(logout())}>
-              <LogoutIcon />
-            </button>
-          </div>
-        ) : (
-          <button className="topmenu__login" onClick={() => setShowLogin(true)}>Войти</button>
-        )}
+        <div className="topmenu__user">
+          <span className="topmenu__user-icon">👤</span>
+          <span className="topmenu__user-name">{user}</span>
+          <button className="topmenu__logout" title="Выйти" aria-label="Выйти"
+            onClick={() => dispatch(logout())}>
+            <LogoutIcon />
+          </button>
+        </div>
       </div>
-
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </header>
   );
 }

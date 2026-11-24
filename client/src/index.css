@@ -176,18 +176,26 @@ body {
 .chart-box { background: var(--card); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); padding: 18px 20px; }
 .chart-box h3 { font-size: 15px; margin: 0 0 12px; color: #3f4650; }
 
-/* ---- Auth ---- */
-.topmenu__login {
-  border: 1px solid var(--green); background: #fff; color: var(--green-dark);
-  border-radius: 6px; padding: 6px 14px; font-weight: 600; cursor: pointer; font-size: 13px;
+/* ---- Login page ---- */
+.login-page {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #eef1f4, #e4ece1); padding: 20px;
 }
-.topmenu__login:hover { background: var(--green); color: #fff; }
-.login-modal { min-width: 340px; display: flex; flex-direction: column; gap: 12px; }
-.login-modal__title { margin: 0; font-size: 20px; }
-.login-modal__input { height: 42px; border: 1px solid var(--line); border-radius: 6px; padding: 0 14px; font-size: 14px; }
-.login-modal__input:focus { outline: none; border-color: var(--green); }
-.login-modal__error { color: #e53935; font-size: 13px; }
-.login-modal__hint { color: var(--muted); font-size: 12px; }
+.login-card {
+  background: #fff; width: 100%; max-width: 380px; border-radius: 14px;
+  box-shadow: 0 12px 44px rgba(0,0,0,.14); padding: 36px 32px; display: flex; flex-direction: column;
+}
+.login-card__logo { font-weight: 700; color: var(--green); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 18px; }
+.login-card__badge { background: var(--green); color: #fff; width: 26px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; }
+.login-card__title { font-size: 20px; text-align: center; margin: 14px 0 22px; color: #3f4650; }
+.login-card__label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.login-card__input { height: 44px; border: 1px solid var(--line); border-radius: 8px; padding: 0 14px; font-size: 14px; margin-bottom: 16px; }
+.login-card__input:focus { outline: none; border-color: var(--green); }
+.login-card__error { color: #e53935; font-size: 13px; margin-bottom: 12px; }
+.login-card__submit { height: 44px; border: none; border-radius: 8px; background: var(--green); color: #fff; font-weight: 700; font-size: 15px; cursor: pointer; transition: background .15s; }
+.login-card__submit:hover { background: var(--green-dark); }
+.login-card__submit:disabled { opacity: .7; cursor: default; }
+.login-card__hint { text-align: center; color: var(--muted); font-size: 12px; margin-top: 16px; }
 
 /* ---- Animations ---- */
 .route-fade { animation: fadeIn .35s ease; }

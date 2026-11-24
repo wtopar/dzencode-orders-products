@@ -15,6 +15,7 @@ Fullstack single-page application: a small inventory of **Orders** and the **Pro
 - **Products** page — all products with a **filter by type** (select). Each product shows: title, serial number, status, guarantee dates (two formats), price (two currencies), order name.
 - **Dashboard** — stat cards + **charts** (recharts): products by type, value by type. Aggregation runs in a **Web Worker** (off the main thread).
 - **Top bar** — live clock (updates every second) + **active-sessions counter via Socket.io** (how many app tabs are open across browsers, in real time).
+- **Auth-gated** — the whole app is behind a JWT login (demo **admin / admin**); after login you land on the Dashboard, logout returns to the login screen.
 - **PWA** — installable, works offline (service worker + manifest).
 - **i18n** (ru/en), **lazy-loaded routes**, **Web Storage** (persisted filter), animated route transitions, responsive/mobile layout.
 
