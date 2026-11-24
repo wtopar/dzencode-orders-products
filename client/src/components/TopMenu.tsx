@@ -49,7 +49,10 @@ export default function TopMenu({ onToggleMenu }: { onToggleMenu: () => void }) 
           </div>
           <div className="topmenu__dt-text">
             <div className="topmenu__weekday">{WEEKDAYS[now.getDay()]}</div>
-            <div className="topmenu__time">{pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}</div>
+            <div className="topmenu__time">
+              {pad(now.getHours())}:{pad(now.getMinutes())}
+              <span className="topmenu__secs">:{pad(now.getSeconds())}</span>
+            </div>
           </div>
         </div>
 

@@ -256,8 +256,16 @@ body {
   .stat-card { min-width: 110px; flex: 1; }
 }
 
-@media (max-width: 480px) {
-  .topmenu__weekday { display: none; }
+@media (max-width: 560px) {
+  .topmenu { padding: 0 10px; gap: 8px; }
+  .topmenu__right { gap: 10px; }
+  .topmenu__datetime { gap: 7px; }
   .topmenu__logo-text { display: none; }
+  .topmenu__weekday { display: none; }
+  .topmenu__secs { display: none; }
+  .topmenu__user-icon { display: none; }
+  .topmenu__user-name { display: none; }
+}
+@media (max-width: 480px) {
   .stat-card b { font-size: 20px; }
 }
